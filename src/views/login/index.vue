@@ -118,6 +118,9 @@ export default {
           })
           // 关闭登录按钮loading
           this.loginLoading = false
+          this.$router.push({
+            name: 'home'
+          })
         })
         .catch(err => {
           console.log(err)
