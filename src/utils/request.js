@@ -5,11 +5,30 @@ import axios from 'axios'
 // 不同的配置，并且不会冲突
 // 创建的axios实例和axios本身的功能一样
 const request = axios.create({
-  baseURL: 'http://api-toutiao-web.itheima.net'// 请求的基础路径
+  baseURL: 'http://api-toutiao-web.itheima.net' // 请求的基础路径
 })
 
-// 请求拦截器
-// 相应拦截器
+// 请求拦截器所有请求都会经过这里
+// 我们可以在允许请求出去之前定制同意业务功能处理  例如统一的设置token
+request.interceptors.request.use(
+  // config 是当前请求相关的配置信息对象
+  function (config) {
+    // 获取存储到本地的user数据比如token
+    const user = JSON.parse(window.localStorage.getItem('user'))
+    if (user) {
+      // 后端要求把需要授权的用户身份放到请求头中 axios可以通过 headers 选项设置请求头
+      // 属性名：Authorization 属性值：Bearer token数据
+      config.headers.Authorization = `Bearer ${user.token}`
+    }
+    // 当return config之后请求才会真正的发出去
+    return config
+  },
+  function (error) {
+    // 请求失败进入这里
+    return Promise.reject(error)
+  }
+)
+// 响应拦截器
 
-// 导出请求方法
+// 默认导出
 export default request

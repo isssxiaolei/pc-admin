@@ -5,8 +5,13 @@
     text-color="#fff"
     active-text-color="#ffd04b"
     router
+    :collapse="isCollapse"
+    :collapse-transition = false
   >
-    <div class="login-head">
+    <div
+      class="login-head"
+      v-show="!isCollapse"
+    >
       <div class="logo"></div>
     </div>
     <el-menu-item index="/">
@@ -49,7 +54,7 @@ export default {
     return {}
   },
   components: {},
-  props: {},
+  props: ['is-collapse'],
   computed: {},
   watch: {},
   created () {},
@@ -58,10 +63,10 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-.login-head {
+  .login-head {
     display: flex;
     justify-content: center;
-    padding-top: 40px;
+    padding-top: 15px;
     margin-bottom: 20px;
     .logo {
       width: 130px;
@@ -70,14 +75,14 @@ export default {
       background-size: contain;
     }
   }
-  /deep/.text-top{
+  /deep/.text-top {
     vertical-align: text-top !important;
-    &::before{
+    &::before {
       font-size: 20px;
     }
   }
-  /deep/.el-menu-item{
+  /deep/.el-menu-item {
     font-size: 17px;
-    padding-left: 30px !important;
+    padding:0 40px 0 20px !important;
   }
 </style>

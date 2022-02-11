@@ -118,6 +118,8 @@ export default {
           })
           // 关闭登录按钮loading
           this.loginLoading = false
+          // 将接口返回的用户数据存储到本地，方便应用数据共享
+          window.localStorage.setItem('user', JSON.stringify(result.data.data))
           this.$router.push({
             name: 'home'
           })
@@ -135,20 +137,20 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.login-container{
-  position: fixed;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  //登录页面背景图片
-  background: url("./bgimage.jpg") no-repeat;
-  background-size: cover;
-  .login-form-wrap {
+  .login-container {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    //登录页面背景图片
+    background: url('./bgimage.jpg') no-repeat;
+    background-size: cover;
+    .login-form-wrap {
       min-width: 300px;
       padding: 20px 30px 0px;
       background-color: #fff;
@@ -162,14 +164,14 @@ export default {
           background-size: contain;
         }
       }
-      .login-form{
-      background-color: #fff;
-      padding:20px 20px 10px 20px;
-      min-width: 300px;
-        .login-btn{
-        width:100%;
+      .login-form {
+        background-color: #fff;
+        padding: 20px 20px 10px 20px;
+        min-width: 300px;
+        .login-btn {
+          width: 100%;
         }
+      }
+    }
   }
-  }
-}
 </style>
