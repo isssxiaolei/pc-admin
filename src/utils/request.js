@@ -1,11 +1,26 @@
 // 基于axios 的请求模块
 import axios from 'axios'
-
+import JSONBig from 'json-bigint'
 // 创建一个axios实例，说白了就是复制了一个axios不同的axios实例可以有
 // 不同的配置，并且不会冲突
 // 创建的axios实例和axios本身的功能一样
 const request = axios.create({
-  baseURL: 'http://api-toutiao-web.itheima.net' // 请求的基础路径
+  baseURL: 'http://api-toutiao-web.itheima.net', // 请求的基础路径
+  // 可以用来定制后端返回的原始数据的处理
+  // data参数就是后端返回的原始数据
+  // axios 默认在内部使用 JSON.parse 来转换处理原始数据
+  transformResponse: [function (data) {
+    try {
+      // JSONBig 后端返回的数据可能不是JSON格式字符串
+      // 如果不是的话那么 JSONBig调用就会报错
+      // 所以我们使用tycatch来捕获异常，处理异常的发生
+      return JSONBig.parse(data)
+    } catch (error) {
+      // 如果转换失败，则把原始数据原封不动的返回出去
+      console.log('转换失败', error)
+      return data
+    }
+  }]
 })
 
 // 请求拦截器所有请求都会经过这里

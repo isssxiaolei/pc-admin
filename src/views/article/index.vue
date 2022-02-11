@@ -15,49 +15,58 @@
       <el-form
         ref="form"
         size="mini"
-        :model="form"
         label-width="40px"
       >
         <el-form-item label="状态">
-          <el-radio-group v-model="form.resource">
-            <el-radio label="全部"></el-radio>
-            <el-radio label="草稿"></el-radio>
-            <el-radio label="待审核"></el-radio>
-            <el-radio label="审核通过"></el-radio>
-            <el-radio label="审核失败"></el-radio>
-            <el-radio label="已删除"></el-radio>
+          <el-radio-group v-model="status">
+            <!-- el-radio默认把label作为本文和选中的value值
+            -->
+            <el-radio :label="null">全部</el-radio>
+            <el-radio :label="0">草稿</el-radio>
+            <el-radio :label="1">待审核</el-radio>
+            <el-radio :label="2">审核通过</el-radio>
+            <el-radio :label="3">审核失败</el-radio>
+            <el-radio :label="4">已删除</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="频道">
           <el-select
-            v-model="form.region"
+            v-model="channelId"
             placeholder="请选择频道"
           >
             <el-option
-              label="区域一"
-              value="shanghai"
+              label="全部"
+              :value="null"
             ></el-option>
             <el-option
-              label="区域二"
-              value="beijing"
+              v-for="(channel, index) in channels"
+              :key="index"
+              :label="channel.name"
+              :value="channel.id"
             ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="日期">
           <el-col :span="11">
             <el-date-picker
-              v-model="form.date1"
+              v-model="rangeDate"
               type="datetimerange"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
               :default-time="['12:00:00']"
-            ></el-date-picker>
+              format="yyyy-MM-DD"
+              value-format="yyyy-MM-DD"
+            />
           </el-col>
         </el-form-item>
         <el-form-item>
+          <!-- button的click事件有个默认参数：当没有指定参数的时候，
+          默认传递一个"isTrusted":true的数据
+          -->
           <el-button
             type="primary"
-            @click="onSubmit"
+            :disabled="loading"
+            @click="loadArticle(1)"
           >查询</el-button>
         </el-form-item>
       </el-form>
@@ -66,7 +75,7 @@
       <div
         slot="header"
         class="clearfix"
-      >根据筛选条件共查询到8888条结果：</div>
+      >根据筛选条件共查询到{{totalCount}}条结果：</div>
       <!-- 数据列表
       table 表格组件
       1.把需要战士的数组列表数据绑定给组件的data属性
@@ -79,6 +88,7 @@
       <el-table
         class="list-table"
         :data="articles"
+        v-loading="loading"
         style="width: 100%"
         size="small"
         stripe
@@ -90,7 +100,7 @@
               :src="scope.row.cover.images[0] || './picerror.jpg'"
               alt
             />-->
-            <img
+            <!--  <img
               v-if="scope.row.cover.images[0]"
               class="article-cover"
               :src="scope.row.cover.images[0]"
@@ -101,7 +111,26 @@
               class="article-cover"
               src="./picLoading.gif"
               alt
-            />
+            />-->
+            <el-image
+              class="article-cover"
+              style="width: 100px; height: 100px"
+              :src="scope.row.cover.images[0]"
+              fit="scale-down"
+              lazy
+            >
+              <div slot="placeholder">
+                <i class="el-icon-loading isLoading"></i>
+              </div>
+
+              <div slot="error">
+                <i
+                  class="el-icon-picture-outline pic-error"
+                  title
+                ></i>
+                <p>图片加载失败</p>
+              </div>
+            </el-image>
           </template>
         </el-table-column>
         <el-table-column
@@ -142,7 +171,7 @@
           prop="address"
           label="操作"
         >
-          <template>
+          <template slot-scope="scope">
             <el-button
               size="mini"
               type="primary"
@@ -154,6 +183,7 @@
               type="danger"
               circle
               icon="el-icon-delete"
+              @click="onDeleteArticle(scope.row.id)"
             ></el-button>
           </template>
         </el-table-column>
@@ -167,27 +197,19 @@
         background
         :total="totalCount"
         :page-size="pageSize"
+        :disabled="loading"
+        :current-page.sync="page"
         @current-change="onCurrentChange"
       />
     </el-card>
   </div>
 </template>
 <script>
-import { getArticle } from '@/api/article.js'
+import { getArticle, getChannels, deleteArticle } from '@/api/article.js'
 export default {
   name: 'articleIndex',
   data () {
     return {
-      form: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: ''
-      },
       articles: [], // 文章数据列表
       articleStatus: [
         {
@@ -217,7 +239,13 @@ export default {
         }
       ],
       totalCount: 0, // 总数据条数
-      pageSize: 20 // 每页条数
+      pageSize: 10, // 每页条数
+      status: null, // 查询文章的状态，不传为全部
+      channels: [], // 频道列表
+      channelId: null, // 查询文章的频道ID
+      rangeDate: null, // 筛选的范围日期
+      loading: true, // 表格数据加载loading
+      page: 1
     }
   },
   components: {},
@@ -226,18 +254,26 @@ export default {
   watch: {},
   created () {
     this.loadArticle()
+    this.loadChannels()
   },
   mounted () {},
   methods: {
     loadArticle (page = 1) {
+      this.loading = true
       getArticle({
         page,
-        per_page: this.pageSize
+        per_page: this.pageSize,
+        status: this.status,
+        channel_id: this.channelId,
+        begin_pubdate: this.rangeDate ? this.rangeDate[0] : null, // 开始日期
+        end_pubdate: this.rangeDate ? this.rangeDate[1] : null // 截止日期
       }).then(res => {
-        console.log(res)
         const { results, total_count: totalCount } = res.data.data
         this.articles = results
         this.totalCount = totalCount
+
+        // 关闭加载中loading
+        this.loading = false
       })
     },
     onSubmit () {
@@ -245,6 +281,36 @@ export default {
     },
     onCurrentChange (page) {
       this.loadArticle(page)
+    },
+    loadChannels () {
+      getChannels().then(res => {
+        this.channels = res.data.data.channels
+      })
+    },
+    onDeleteArticle (articleId) {
+      this.$confirm('确定要删除吗?', '删除文章', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          deleteArticle(articleId.toString()).then(res => {
+            this.$message({
+              showClose: true,
+              type: 'success',
+              message: '删除成功!'
+            })
+            // 删除成功，更新数据列表
+            this.loadArticle(this.page)
+          })
+        })
+        .catch(() => {
+          this.$message({
+            showClose: true,
+            type: 'info',
+            message: '已取消操作！'
+          })
+        })
     }
   }
 }
@@ -259,5 +325,14 @@ export default {
   .article-cover {
     width: 100px;
     background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: #ccc;
+  }
+  /deep/.pic-error,
+  .isLoading {
+    font-size: 30px !important;
   }
 </style>
