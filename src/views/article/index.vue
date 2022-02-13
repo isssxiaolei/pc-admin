@@ -177,6 +177,7 @@
               type="primary"
               circle
               icon="el-icon-edit"
+              @click="$router.push('/publish?id=' + scope.row.id.toString())"
             ></el-button>
             <el-button
               size="mini"
@@ -275,9 +276,6 @@ export default {
         // 关闭加载中loading
         this.loading = false
       })
-    },
-    onSubmit () {
-      console.log('submit!')
     },
     onCurrentChange (page) {
       this.loadArticle(page)

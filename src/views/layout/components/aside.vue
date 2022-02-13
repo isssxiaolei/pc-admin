@@ -76,7 +76,7 @@ export default {
     }
   }
   /deep/.text-top {
-    vertical-align: text-top !important;
+    // vertical-align: text-top !important;
     &::before {
       font-size: 20px;
     }

@@ -1,6 +1,5 @@
 /* 文章相关请求模块 */
 import request from '@/utils/request.js'
-
 // 获取文章列表
 export const getArticle = params => {
   return request({
@@ -29,5 +28,33 @@ export const deleteArticle = articleId => {
     url: `/mp/v1_0/articles/${articleId}`
     // 接口文档中的路径参数需要在url中传递
     // 凡是看到接口路径中有:xxx 的字段则需要传递路径参数
+  })
+}
+
+// 发表文章
+export const publishArticle = (data, draft = false) => {
+  return request({
+    method: 'POST',
+    url: '/mp/v1_0/articles',
+    params: { draft }, // true 或 false 是否存为草稿（true 为草稿）
+    data
+  })
+}
+
+// 编辑文章
+export const updateArticle = (articleId, data, draft = false) => {
+  return request({
+    method: 'PUT',
+    url: `/mp/v1_0/articles/${articleId}`,
+    params: { draft }, // true 或 false 是否存为草稿（true 为草稿）
+    data
+  })
+}
+
+// 获取指定文章
+export const getEditArticle = articleId => {
+  return request({
+    method: 'GET',
+    url: `/mp/v1_0/articles/${articleId}`
   })
 }
