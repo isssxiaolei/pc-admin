@@ -58,3 +58,17 @@ export const getEditArticle = articleId => {
     url: `/mp/v1_0/articles/${articleId}`
   })
 }
+
+// 修改文章评论状态
+export const updataCommentStatus = (articleId, allowComment) => {
+  return request({
+    method: 'PUT',
+    url: '/mp/v1_0/comments/status',
+    params: {
+      article_id: articleId
+    },
+    data: {
+      allow_comment: allowComment
+    }
+  })
+}

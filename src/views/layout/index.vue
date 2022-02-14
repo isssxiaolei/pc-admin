@@ -49,6 +49,8 @@
 <script>
 import AppAside from './components/aside.vue'
 import { getUserProfile } from '@/api/user.js'
+import globalBus from '@/utils/global-bus.vue'
+
 export default {
   name: 'LayoutIndex',
   data () {
@@ -63,6 +65,12 @@ export default {
   watch: {},
   created () {
     this.loadUserProfile()
+    // 注册自定义事件 只有当事件发布以后，这个注册函数就会被执行
+    globalBus.$on('update-user', data => {
+      // this.user = data 对象之间赋值是引用，会导致相互影响的问题
+      this.user.name = data.name
+      this.user.photo = data.photo
+    })
   },
   mounted () {},
   methods: {
