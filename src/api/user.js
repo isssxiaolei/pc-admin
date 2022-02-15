@@ -36,3 +36,12 @@ export const updateUserProfile = data => {
     data
   })
 }
+
+// 获取粉丝列表
+export const getUserfans = params => {
+  return request({
+    method: 'GET',
+    url: '/mp/v1_0/followers',
+    params
+  })
+}

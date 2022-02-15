@@ -17,7 +17,7 @@
             :rules="rules"
             ref="profile-form"
             :model="userProfile"
-            label-width="70px"
+            label-width="80px"
             label-position="left"
           >
             <el-form-item label="编号">{{userProfile.id}}</el-form-item>
@@ -122,9 +122,18 @@ export default {
   data () {
     return {
       rules: {
-        name: [{ min: 1, max: 5, message: '长度在 1 到 7 个字符', trigger: 'change' }],
-        email: [{ type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }],
-        intro: [{ min: 1, max: 100, message: '长度在 1 到 7 个字符', trigger: 'change' }]
+        name: [
+          { min: 1, max: 5, message: '长度在 1 到 7 个字符', trigger: 'change' },
+          { required: true, message: '昵称不能为空', trigger: 'change' }
+        ],
+        email: [
+          { required: true, message: '邮箱不能为空', trigger: 'change' },
+          { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
+        ],
+        intro: [
+          { required: true, message: '请添加个人介绍', trigger: 'change' },
+          { min: 1, max: 100, message: '长度在 1 到 7 个字符', trigger: 'change' }
+        ]
       },
       userProfile: {
         email: '',

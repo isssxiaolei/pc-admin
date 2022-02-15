@@ -33,7 +33,7 @@
             <i class="el-icon-arrow-down el-icon--right"></i>
           </div>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>设置</el-dropdown-item>
+            <el-dropdown-item @click.native="$router.push('/settings')">设置</el-dropdown-item>
             <!-- 组件默认不识别原生事件除非内部做了处理 -->
             <el-dropdown-item @click.native="onLogout">退出</el-dropdown-item>
           </el-dropdown-menu>
