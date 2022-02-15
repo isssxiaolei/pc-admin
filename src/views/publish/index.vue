@@ -42,10 +42,25 @@
         <el-form-item label="封面">
           <el-radio-group v-model="article.cover.type">
             <el-radio :label="1">单图</el-radio>
-            <el-radio :label="2">三图</el-radio>
+            <el-radio :label="3">三图</el-radio>
             <el-radio :label="0">无图</el-radio>
             <el-radio :label="-1">自动</el-radio>
           </el-radio-group>
+          <!-- <template v-if="article.cover.type > 0">
+            <UploadCover
+              v-for="(cover,index) in article.cover.type"
+              :key="cover"
+              :cover-image="article.cover.images[index]"
+              @update-cover="onUpdateCover(index,url)"
+            />
+          </template>-->
+          <template v-if="article.cover.type > 0">
+            <UploadCover
+              v-for="(cover,index) in article.cover.type"
+              :key="cover"
+              v-model="article.cover.images[index]"
+            />
+          </template>
         </el-form-item>
         <el-form-item
           label="频道"
@@ -83,6 +98,7 @@
   </div>
 </template>
 <script>
+import UploadCover from './components/upload-cover.vue'
 import { getChannels, publishArticle, getEditArticle, updateArticle } from '@/api/article.js'
 import { uploadImage } from '@/api/image.js'
 // import element-tiptap 样式
@@ -120,7 +136,7 @@ export default {
         title: '', // 文章标题
         content: '', // 文章内容
         cover: {
-          type: 0, // 封面类型
+          type: 1, // 封面类型
           images: [] // 封面图片的地址
         },
         channel_id: null
@@ -184,7 +200,8 @@ export default {
     }
   },
   components: {
-    'el-tiptap': ElementTiptap
+    'el-tiptap': ElementTiptap,
+    UploadCover
   },
   props: {},
   computed: {},
@@ -244,6 +261,9 @@ export default {
         // 模板绑定展示
         this.article = res.data.data
       })
+    },
+    onUpdateCover (index, url) {
+      this.article.cover.images[index] = url
     }
   }
 }

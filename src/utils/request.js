@@ -1,6 +1,8 @@
 // 基于axios 的请求模块
 import axios from 'axios'
 import JSONBig from 'json-bigint'
+import router from '@/router/'
+import { Message } from 'element-ui'
 // 创建一个axios实例，说白了就是复制了一个axios不同的axios实例可以有
 // 不同的配置，并且不会冲突
 // 创建的axios实例和axios本身的功能一样
@@ -43,6 +45,22 @@ request.interceptors.request.use(
   }
 )
 // 响应拦截器
-
+request.interceptors.response.use(function (response) {
+  // Any status code that lie within the range of 2xx cause this function to trigger
+  // Do something with response data
+  return response
+}, function (error) {
+  const { status } = error.response
+  if (status === 401) {
+    window.localStorage.removeItem('user')
+    router.push('/login')
+    Message.warning('登录状态无效，请重新登录')
+  } else if (status === 403) {
+    Message.warning('没有操作权限')
+  } else if (status >= 500) {
+    Message.error('服务器异常，请重试！')
+  }
+  return Promise.reject(error)
+})
 // 默认导出
 export default request
