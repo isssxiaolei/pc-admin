@@ -72,3 +72,12 @@ export const updataCommentStatus = (articleId, allowComment) => {
     }
   })
 }
+
+// 文章搜索
+export const searchArticle = params => {
+  return request({
+    method: 'GET',
+    url: '/mp/v1_0/search',
+    params
+  })
+}

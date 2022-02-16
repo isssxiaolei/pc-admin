@@ -55,11 +55,13 @@
             />
           </template>-->
           <template v-if="article.cover.type > 0">
-            <UploadCover
-              v-for="(cover,index) in article.cover.type"
-              :key="cover"
-              v-model="article.cover.images[index]"
-            />
+            <div class="upload-cover-wrap">
+              <UploadCover
+                v-for="(cover,index) in article.cover.type"
+                :key="cover"
+                v-model="article.cover.images[index]"
+              />
+            </div>
           </template>
         </el-form-item>
         <el-form-item
@@ -204,14 +206,24 @@ export default {
     UploadCover
   },
   props: {},
-  computed: {},
   watch: {},
+  computed: {},
   created () {
     this.loadChannels()
+
     // 由于发布和编辑使用的同一个组件 所以这里要判断
     // 如果路由路径参数中有id，则请求展示文章内容
     if (this.$route.query.id) {
       this.loadArticle()
+    } else if (this.$route.query.id) {
+      this.article = {
+        title: '', // 文章标题
+        content: '', // 文章内容
+        cover: {
+          type: 1, // 封面类型
+          images: [] // 封面图片的地址
+        }
+      }
     }
   },
   mounted () {},
@@ -269,4 +281,10 @@ export default {
 }
 </script>
 <style lang="less" scoped>
+  .upload-cover-wrap {
+    display: flex;
+    justify-content: start;
+    // flex-direction: column;
+    align-items: center;
+  }
 </style>

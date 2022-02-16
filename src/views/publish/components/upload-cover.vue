@@ -1,14 +1,21 @@
 <template>
-  <div
-    class="upload-cover"
-    @click="showCoverSelect"
-  >
-    <div class="cover-wrap">
+  <div class="upload-cover">
+    <div
+      class="cover-wrap"
+      @click="showCoverSelect"
+    >
       <img
+        v-show="value"
         class="cover-image"
         ref="cover-image"
         alt
         :src="value"
+      />
+      <img
+        v-if="!value"
+        class="cover-image"
+        src="./upload.png"
+        alt
       />
     </div>
     <el-dialog
@@ -35,27 +42,38 @@
           <!-- 作用到组件上可以获取组件 -->
         </el-tab-pane>
         <el-tab-pane
-          label="上传图片"
+          label="本地上传"
           name="second"
+          class="cover-wrap"
         >
-          <input
-            ref="file"
-            type="file"
-            @change="onFileChange"
-          />
-          <img
-            ref="previes-image"
-            src
-            width="100"
-            alt
-          />
+          <label for="file-upload">
+            <input
+              id="file-upload"
+              ref="file"
+              type="file"
+              @change="onFileChange"
+              hidden
+            />
+            <img
+              v-show="previewBlob"
+              class="cover-image"
+              ref="preview-image"
+              src
+            />
+            <img
+              v-if="!previewBlob"
+              class="cover-image"
+              src="./upload.png"
+              alt
+            />
+          </label>
         </el-tab-pane>
       </el-tabs>
       <span
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button @click="onCancelCover">取 消</el-button>
         <el-button
           type="primary"
           @click="onCoverConfirm"
@@ -72,7 +90,8 @@ export default {
   data () {
     return {
       dialogVisible: false,
-      activeName: 'first'
+      activeName: 'first',
+      previewBlob: ''
     }
   },
   components: { ImageList },
@@ -96,8 +115,9 @@ export default {
     onFileChange () {
       const file = this.$refs.file.files[0] // 获取文件对象
       const blob = window.URL.createObjectURL(file) // 转化为blob数据用于图片预览
-      this.$refs['previes-image'].src = blob
-      // this.$refs.file.value = '' // 防止用户选择同一个文件不触发事件
+      this.previewBlob = blob
+      this.$refs['preview-image'].src = blob
+      //  // 防止用户选择同一个文件不触发事件
     },
     onCoverConfirm () {
       if (this.activeName === 'second') {
@@ -126,6 +146,12 @@ export default {
         this.$emit('input', imageList.images[selected].url)
         this.dialogVisible = false
       }
+    },
+    onCancelCover () {
+      this.dialogVisible = false
+      this.$refs.file.value = ''
+      this.previewBlob = ''
+      this.$refs['preview-image'].src = ''
     }
   }
 }
@@ -134,10 +160,20 @@ export default {
   .cover-wrap {
     width: 150px;
     height: 150px;
-    border: 1px solid #000;
+    border: 1px dashed #ccc;
+    position: relative;
+    margin-right: 20px;
     .cover-image {
-      height: 120px;
+      height: 150px;
       max-width: 100%;
+    }
+    /deep/.el-icon-picture-outline {
+      position: absolute;
+      font-size: 40px;
+      top: 50%;
+      left: 50%;
+      margin-left: -20px;
+      margin-top: -22px;
     }
   }
 </style>

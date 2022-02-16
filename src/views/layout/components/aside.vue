@@ -1,12 +1,12 @@
 <template>
   <el-menu
-    :default-active="$route.path"
+    :default-active="activePath"
     background-color="#002033"
     text-color="#fff"
     active-text-color="#ffd04b"
     router
     :collapse="isCollapse"
-    :collapse-transition = false
+    :collapse-transition="false"
   >
     <div
       class="login-head"
@@ -55,7 +55,12 @@ export default {
   },
   components: {},
   props: ['is-collapse'],
-  computed: {},
+  computed: {
+    activePath () {
+      // 当从内容管理页面点击编辑文章跳转时，判断跳转路径是否为editarticle？如果是则把高亮节点改为文章管理，而不是文章发布
+      return this.$route.path === '/editarticle' ? '/article' : this.$route.path
+    }
+  },
   watch: {},
   created () {},
   mounted () {},
@@ -83,6 +88,6 @@ export default {
   }
   /deep/.el-menu-item {
     font-size: 17px;
-    padding:0 40px 0 20px !important;
+    padding: 0 40px 0 20px !important;
   }
 </style>

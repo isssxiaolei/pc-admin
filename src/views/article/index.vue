@@ -18,7 +18,10 @@
         label-width="40px"
       >
         <el-form-item label="状态">
-          <el-radio-group v-model="status">
+          <el-radio-group
+            v-model="status"
+            @change="loadArticle(1)"
+          >
             <!-- el-radio默认把label作为本文和选中的value值
             -->
             <el-radio :label="null">全部</el-radio>
@@ -33,6 +36,7 @@
           <el-select
             v-model="channelId"
             placeholder="请选择频道"
+            @change="loadArticle(1)"
           >
             <el-option
               label="全部"
@@ -56,18 +60,30 @@
               :default-time="['12:00:00']"
               format="yyyy-MM-DD"
               value-format="yyyy-MM-DD"
+              @change="loadArticle(1)"
             />
           </el-col>
         </el-form-item>
-        <el-form-item>
+        <el-form-item label="搜索">
           <!-- button的click事件有个默认参数：当没有指定参数的时候，
           默认传递一个"isTrusted":true的数据
           -->
-          <el-button
-            type="primary"
-            :disabled="loading"
-            @click="loadArticle(1)"
-          >查询</el-button>
+          <el-col
+            :span="4"
+            class="input-wrap"
+          >
+            <el-input
+              class="search-body"
+              v-model="searchKey"
+              clearable
+              placeholder="搜索关键词"
+              @clear="loadArticle(1)"
+            ></el-input>
+            <el-button
+              :disabled="loading"
+              @click="onSearchArticle(1)"
+            >搜索</el-button>
+          </el-col>
         </el-form-item>
       </el-form>
     </el-card>
@@ -177,7 +193,7 @@
               type="primary"
               circle
               icon="el-icon-edit"
-              @click="$router.push('/publish?id=' + scope.row.id.toString())"
+              @click="$router.push('/editarticle?id=' + scope.row.id.toString())"
             ></el-button>
             <el-button
               size="mini"
@@ -206,7 +222,7 @@
   </div>
 </template>
 <script>
-import { getArticle, getChannels, deleteArticle } from '@/api/article.js'
+import { getArticle, getChannels, deleteArticle, searchArticle } from '@/api/article.js'
 export default {
   name: 'articleIndex',
   data () {
@@ -246,7 +262,8 @@ export default {
       channelId: null, // 查询文章的频道ID
       rangeDate: null, // 筛选的范围日期
       loading: true, // 表格数据加载loading
-      page: 1
+      page: 1,
+      searchKey: ''
     }
   },
   components: {},
@@ -309,6 +326,20 @@ export default {
             message: '已取消操作！'
           })
         })
+    },
+    onSearchArticle (page = 1) {
+      searchArticle({
+        q: this.searchKey,
+        page: page,
+        per_page: this.pageSize
+      }).then(res => {
+        console.log(res)
+        const { results } = res.data.data
+        this.articles = results
+        this.page = 1
+        this.status = null
+        this.channelId = null
+      })
     }
   }
 }
@@ -332,5 +363,14 @@ export default {
   /deep/.pic-error,
   .isLoading {
     font-size: 30px !important;
+  }
+  .input-wrap {
+    width: 350px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .search-body {
+      margin-right: 15px;
+    }
   }
 </style>

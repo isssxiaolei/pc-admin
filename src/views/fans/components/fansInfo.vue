@@ -8,7 +8,7 @@
 </template>
 <script>
 import * as echarts from 'echarts'
-import { getFansInfo } from '@/api/user.js'
+import { getUserfans } from '@/api/user.js'
 export default {
   name: 'fansInfo',
   data () {
@@ -50,10 +50,7 @@ export default {
   },
   methods: {
     loadFansInfo () {
-      getFansInfo({
-        type: 'c',
-        source: '1493476452534845440181'
-      }).then(res => {
+      getUserfans().then(res => {
         console.log(res)
       })
     }
