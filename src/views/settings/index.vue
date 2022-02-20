@@ -123,7 +123,7 @@ export default {
     return {
       rules: {
         name: [
-          { min: 1, max: 5, message: '长度在 1 到 7 个字符', trigger: 'change' },
+          { min: 1, max: 7, message: '长度在 1 到 7 个字符', trigger: 'change' },
           { required: true, message: '昵称不能为空', trigger: 'change' }
         ],
         email: [
@@ -132,7 +132,7 @@ export default {
         ],
         intro: [
           { required: true, message: '请添加个人介绍', trigger: 'change' },
-          { min: 1, max: 100, message: '长度在 1 到 7 个字符', trigger: 'change' }
+          { min: 1, max: 100, message: '长度在 1 到 60个字符', trigger: 'change' }
         ]
       },
       userProfile: {

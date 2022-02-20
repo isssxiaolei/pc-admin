@@ -81,3 +81,12 @@ export const searchArticle = params => {
     params
   })
 }
+
+// 获取文章统计数据总量
+export const getTotalCount = params => {
+  return request({
+    method: 'GET',
+    url: '/mp/v1_0/statistics/articles',
+    params
+  })
+}

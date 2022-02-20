@@ -71,9 +71,10 @@ export default {
   props: {},
   computed: {},
   watch: {},
-  created () {},
-  mounted () {
+  created () {
     this.loadUserFans()
+  },
+  mounted () {
   },
   methods: {
     loadUserFans () {
