@@ -1,7 +1,7 @@
 <template>
   <el-menu
     :default-active="activePath"
-    background-color="#002033"
+    background-color="#073763"
     text-color="#fff"
     active-text-color="#ffd04b"
     router
@@ -16,7 +16,7 @@
     </div>
     <el-menu-item index="/">
       <i class="el-icon-s-home text-top"></i>
-      <span slot="title">首页</span>
+      <span slot="title">主页</span>
     </el-menu-item>
     <el-menu-item index="/article">
       <i class="el-icon-document text-top"></i>
@@ -74,10 +74,10 @@ export default {
     padding-top: 15px;
     margin-bottom: 20px;
     .logo {
-      width: 130px;
-      height: 57px;
-      background: url('./logo_admin.png') no-repeat;
-      background-size: contain;
+      width: 150px;
+      height: 80px;
+      background: url('./logo.png') no-repeat;
+      background-size: cover;
     }
   }
   /deep/.text-top {

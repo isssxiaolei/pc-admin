@@ -6,10 +6,7 @@
           :span="12"
           class="lf_container"
         >
-          <el-tabs
-            v-model="activeName"
-            @tab-click="handleClick"
-          >
+          <el-tabs v-model="activeName">
             <el-tab-pane
               label="数据概览"
               name="first"
@@ -104,21 +101,13 @@
                 direction="vertical"
                 :autoplay="true"
               >
-                <el-carousel-item>
+                <el-carousel-item
+                  v-for="(img,index) in imgList"
+                  :key="index"
+                >
                   <img
-                    src="https://img0.baidu.com/it/u=4140071089,1574471861&fm=253&fmt=auto&app=120&f=JPEG?w=889&h=500"
-                    alt
-                  />
-                </el-carousel-item>
-                <el-carousel-item>
-                  <img
-                    src="https://img1.baidu.com/it/u=3975382827,1203451323&fm=253&fmt=auto&app=120&f=JPEG?w=800&h=500"
-                    alt
-                  />
-                </el-carousel-item>
-                <el-carousel-item>
-                  <img
-                    src="https://img0.baidu.com/it/u=3774470040,2951827578&fm=253&fmt=auto&app=120&f=JPEG?w=889&h=500"
+                    class="item-img"
+                    :src="img"
                     alt
                   />
                 </el-carousel-item>
@@ -132,7 +121,11 @@
                 <el-col :span="12">
                   <el-card>
                     <div class="hot-head">
-                      <span class="module-name">热门活动</span>
+                      <span class="module-name">
+                        热门活动
+                        <i class="el-icon-s-flag"></i>
+                      </span>
+
                       <span class="more">
                         更多
                         <i class="el-icon-arrow-right"></i>
@@ -156,7 +149,10 @@
                 <el-col :span="12">
                   <el-card>
                     <div class="hot-head">
-                      <span class="module-name">创作热榜</span>
+                      <span class="module-name">
+                        创作热榜
+                        <i class="el-icon-s-data"></i>
+                      </span>
                       <span class="more">
                         更多
                         <i class="el-icon-arrow-right"></i>
@@ -166,12 +162,12 @@
                       <ul class="hot-list">
                         <li
                           class="hot-item"
-                          v-for="(item, index) in hotList"
+                          v-for="(item, index) in writeList"
                           :key="index"
                         >
                           <span class="hot-title">{{item.name}}</span>
-                          <span class="hot-icon">HOT</span>
-                          <span class="hot-count">{{item.count}}万人参与</span>
+                          <!-- <span class="hot-icon">HOT</span> -->
+                          <span class="hot-count">{{item.count}}赞<i></i></span>
                         </li>
                       </ul>
                     </div>
@@ -205,6 +201,20 @@ export default {
         { name: '数据库分享者大会', count: '6.8' },
         { name: '前段技术论坛', count: '3.8' },
         { name: '性能优化大赛', count: '2.1' }
+      ],
+      writeList: [
+        { name: '《谁动了我的数据》', count: '5000' },
+        { name: '《一个由mouseleave引发的bug》', count: '4000' },
+        { name: '《深入浅出虚拟 DOM 和 Diff 算法》', count: '3000' },
+        { name: '《用 Canvas 实现123木头人游戏》', count: '2000' },
+        { name: '《展开操作符：一家人就这么被拆散了》', count: '1000' },
+        { name: '《实用 JavaScript 调试技巧》', count: '1000' },
+        { name: '《原生微信小程序的优化》', count: '1000' }
+      ],
+      imgList: [
+        'https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d48376cd32fc49158adcf9528401fa68~tplv-k3u1fbpfcp-zoom-crop-mark:1304:1304:1304:734.awebp?',
+        'https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d35b8cdc4f4740eeb6261a5aff9019f0~tplv-k3u1fbpfcp-zoom-crop-mark:1304:1304:1304:734.awebp',
+        'https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/27b20ab0de7a4a51a840258f13440aae~tplv-k3u1fbpfcp-zoom-crop-mark:1304:1304:1304:734.awebp?'
       ]
     }
   },
@@ -212,9 +222,7 @@ export default {
   props: {},
   computed: {},
   watch: {},
-  created () {
-    this.loadCount()
-  },
+  created () {},
   mounted () {},
   methods: {}
 }
@@ -263,6 +271,9 @@ export default {
   .rt_container {
     padding-top: 38px;
     padding-left: 25px;
+    /deep/.el-carousel {
+      border-radius: 10px;
+    }
   }
   .other-module {
     padding-top: 65px;
@@ -275,6 +286,12 @@ export default {
         font-size: 20px;
         line-height: 24px;
         color: #222;
+        /deep/.el-icon-s-flag {
+          color: rgb(230, 55, 55);
+        }
+        /deep/.el-icon-s-data {
+          color: orangered;
+        }
       }
       .more {
         font-size: 14px;
@@ -322,5 +339,8 @@ export default {
         }
       }
     }
+  }
+  .item-img {
+    width: 100%;
   }
 </style>

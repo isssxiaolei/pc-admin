@@ -20,7 +20,7 @@
             }"
             @click="isCollapse = !isCollapse"
           ></i>
-          <span class="header-title">黑马头条后台管理</span>
+          <span class="header-title">创作者中心</span>
         </div>
         <el-dropdown>
           <div class="user-info">
@@ -127,14 +127,15 @@ export default {
     align-items: center;
     border-bottom: 1px solid #ccc;
     /deep/.fold-btn {
-      font-size: 25px;
+      font-size: 23px;
       margin-right: 10px;
+      color: #1d7dfa;
     }
     .header-title {
-      font-size: 24px;
-      font-family: 'Microsoft YaHei';
-      color: rgba(12, 12, 12, 0.8);
-      font-weight: 700;
+      font-size: 20px;
+      font-family: PingFang SC;
+      color: #1d7dfa;
+      font-weight: 500;
       vertical-align: text-bottom;
     }
     .user-info {
