@@ -160,7 +160,7 @@ export default {
         .logo {
           width: 200px;
           height: 57px;
-          background: url('./logo_index.png') no-repeat;
+          background: url('./logo.png') no-repeat;
           background-size: contain;
         }
       }
