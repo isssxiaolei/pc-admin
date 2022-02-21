@@ -63,6 +63,7 @@ const routes = [
 
 ]
 const router = new VueRouter({
+  mode: 'hash',
   routes
 })
 // 路由导航守卫，所有页面的导航都会进入这里（控制访问权限）
