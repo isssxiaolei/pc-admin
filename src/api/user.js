@@ -1,7 +1,7 @@
 // 用户相关请求
 import request from '@/utils/request.js'
 
-// 用户登录
+// 用户录
 export const userLogin = data => {
   return request({
     method: 'POST',
