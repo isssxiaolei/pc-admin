@@ -7,7 +7,7 @@ import { Message } from 'element-ui'
 // 不同的配置，并且不会冲突
 // 创建的axios实例和axios本身的功能一样
 const request = axios.create({
-  baseURL: 'http://api-toutiao-web.itheima.net', // 请求的基础路径
+  baseURL: 'https://api-toutiao-web.itheima.net', // 请求的基础路径
   // 可以用来定制后端返回的原始数据的处理
   // data参数就是后端返回的原始数据
   // axios 默认在内部使用 JSON.parse 来转换处理原始数据
